@@ -1,0 +1,32 @@
+pool: GapVDC20
+trigger: none
+
+resources:
+  repositories:
+    - repository: AKS-Onboarding-Global
+      type: githubenterprise
+      ref: main
+      name: cloudexecution/AKS-Onboarding-Global
+      endpoint: 'GHE-ADO'
+    - repository: EnvRepo
+      type: githubenterprise
+      ref: $(Build.SourceBranch)
+      name: cloudexecution/$(System.TeamProject)
+      endpoint: 'GHE-ADO'
+
+
+steps:
+  - checkout: AKS-Onboarding-Global
+    clean: true
+    persistCredentials: true
+  - checkout: self
+    clean: true
+    persistCredentials: true
+  - script: dir $(Build.SourcesDirectory)
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: 'gap-spn-aks'
+      scriptType: 'pscore'
+      scriptLocation: inlineScript
+      inlineScript: |
+         az deployment group create --resource-group 'g-rsg-2n-commerce02-pim-01' --subscription '7a0b1607-ddd6-4326-b526-77b2dfbb0fdb' --template-file '$(Agent.BuildDirectory)/s/AKS-Onboarding-Global/scripts/templates/akv.json' --parameters '$(Agent.BuildDirectory)/s/AKS-Onboarding-Nonproduction/commerce/com-pim/eastUS/com-pim-01/akv_parameters.json'
