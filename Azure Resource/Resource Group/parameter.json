@@ -1,0 +1,20 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "resources": [
+      {
+        "type": "Microsoft.Resources/deployments",
+        "apiVersion": "2021-04-01",
+        "name": "nestedDeployment",
+        "resourceGroup": "demoResourceGroup",
+        "location": "eastus2",
+        "properties": {
+          "mode": "Incremental",
+          "template": {
+            "resourceGroup"
+          }
+        }
+      }
+    ],
+    "outputs": {}
+  }
